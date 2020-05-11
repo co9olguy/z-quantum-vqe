@@ -6,7 +6,7 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/tutorial-1-diatomic-molecule.git"
-    branch: "stable"
+    branch: "master"
 - name: z-quantum-core
   type: git
   parameters:
