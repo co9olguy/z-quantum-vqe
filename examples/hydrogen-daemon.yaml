@@ -31,7 +31,7 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
-    branch: "master"
+    branch: "fix-proxy"
 - name: qe-forest
   type: git
   parameters:
@@ -131,7 +131,7 @@ spec:
           - transformation: Jordan-Wigner
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-          - resources: [qe-openfermion, z-quantum-core]
+          - resources: [z-quantum-core, qe-openfermion]
     - - name: build-vqe-circuit-template
         template: build-vqe-circuit-template
         arguments:
@@ -161,7 +161,7 @@ spec:
         template: start-proxy
         arguments:
           parameters:
-          - resources: [z-quantum-core]
+          - resources: [z-quantum-core, z-quantum-optimizers]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
 
@@ -169,7 +169,7 @@ spec:
         template: run-optimizer
         arguments:
           parameters:
-          - ip: "{{steps.start-proxy.ip}}"
+          - ip: '{{steps.start-proxy.ip}}'
           - resources: [z-quantum-core, z-quantum-optimizers]
           - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B', 'options': {'keep_value_history': True}}"
           - docker-image: "{{workflow.parameters.docker-image}}"
@@ -181,7 +181,7 @@ spec:
         template: start-evaluation-service
         arguments:
           parameters:
-          - ip: "{{steps.start-proxy.ip}}"
+          - ip: '{{steps.start-proxy.ip}}'
           - resources: [z-quantum-core, qe-forest]
           - backend-specs: "{'module_name': 'zquantum.qhipster.simulator', 'function_name': 'QHipsterSimulator'}"
           artifacts:
@@ -204,7 +204,7 @@ spec:
         arguments:
           parameters:
           - ip: "{{inputs.parameters.ip}}"
-          - resources: [z-quantum-core]
+          - resources: [z-quantum-core, z-quantum-optimizers]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
 
